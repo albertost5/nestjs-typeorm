@@ -12,6 +12,6 @@ export class Task {
   @Column()
   description: string;
 
-  @Column()
+  @Column({ default: TaskStatus.OPEN })
   status: TaskStatus;
 }
