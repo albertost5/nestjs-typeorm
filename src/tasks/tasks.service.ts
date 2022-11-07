@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { TaskStatus } from './task-status.enum';
 // import { v4 as uuidv4 } from 'uuid';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -10,6 +10,11 @@ import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 
 @Injectable()
 export class TasksService {
+
+  private logger = new Logger('TaskService', {
+    timestamp: true
+  });
+
   constructor(
     @InjectRepository(Task)
     private readonly taskRepository: Repository<Task>,
@@ -45,9 +50,15 @@ export class TasksService {
         'LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search)',
         { search: `%${search}%` },
       );
-    const tasks = await query.getMany();
+    
+    try {
+      const tasks = await query.getMany();
+      return tasks;
+    } catch (error) {
+      this.logger.error(`Error: ${error}`);
+      throw new InternalServerErrorException();
+    }
 
-    return tasks;
   }
 
   async deleteTask(id: string): Promise<object> {
@@ -69,7 +80,7 @@ export class TasksService {
 
     const task = await this.getTaskById(id);
     task.status = status;
-    this.taskRepository.save(task);
+    await this.taskRepository.save(task);
 
     return task;
   }
