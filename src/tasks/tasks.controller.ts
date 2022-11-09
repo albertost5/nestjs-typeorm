@@ -28,7 +28,6 @@ export class TasksController {
 
   @Get()
   getTasks(@Query() filterDto: GetTasksFilterDto): Promise<Task[]> {
-    this.logger.log(`getTasks invoked...`);
     return this.tasksService.getTasks(filterDto);
   }
 

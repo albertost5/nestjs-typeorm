@@ -1,10 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import {
-  FindOneOptions,
-  Repository
-} from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { Task } from './task.entity';
 import { TasksService } from './tasks.service';
 
@@ -13,11 +10,11 @@ describe('Test suite: tasks.service.ts', () => {
   let taskRepository: Repository<Task>;
 
   // MOCKS
-  const createTaskDtoMock = require('../../test/service/createTaskDtoMock.json');
-  const saveTaskMock = require('../../test/service/saveTaskMock.json');
-  const deleteMock_0 = require('../../test/service/deleteMock_0.json');
-  const deleteMock_1 = require('../../test/service/deleteMock_1.json');
-  const deleteResMock = require('../../test/service/deleteResMock.json');
+  const createTaskDtoMock = require('../../test/services/createTaskDtoMock.json');
+  const saveTaskMock = require('../../test/services/saveTaskMock.json');
+  const deleteMock_0 = require('../../test/services/deleteMock_0.json');
+  const deleteMock_1 = require('../../test/services/deleteMock_1.json');
+  const deleteResMock = require('../../test/services/deleteResMock.json');
 
   const TASK_REPOSITORY_TOKEN = getRepositoryToken(Task);
   console.log({ TASK_REPOSITORY_TOKEN });
