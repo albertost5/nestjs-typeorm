@@ -18,7 +18,6 @@ import { Logger } from '@nestjs/common';
 
 @Controller('tasks')
 export class TasksController {
-
   private logger = new Logger('TasksController');
   constructor(private readonly tasksService: TasksService) {}
 
@@ -29,7 +28,7 @@ export class TasksController {
 
   @Get()
   getTasks(@Query() filterDto: GetTasksFilterDto): Promise<Task[]> {
-    this.logger.log(`getTasks invoked...`)
+    this.logger.log(`getTasks invoked...`);
     return this.tasksService.getTasks(filterDto);
   }
 
@@ -48,7 +47,11 @@ export class TasksController {
     @Param('id') id: string,
     @Body() updateTaskStatusDto: UpdateTaskStatusDto,
   ) {
-    this.logger.log(`updateTaskStatus invoked... Body: ${JSON.stringify(updateTaskStatusDto)}`)
+    this.logger.log(
+      `updateTaskStatus invoked... Body: ${JSON.stringify(
+        updateTaskStatusDto,
+      )}`,
+    );
     return this.tasksService.updateTaskStatus(id, updateTaskStatusDto);
   }
 

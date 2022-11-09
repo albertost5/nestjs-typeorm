@@ -6,11 +6,11 @@ async function bootstrap() {
   const logger = new Logger();
   const app = await NestFactory.create(AppModule);
   const PORT = process.env.PORT || 3001;
-  
+
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(PORT);
 
-  logger.log(`Listening on port: ${PORT}`, 'NestApplication')
+  logger.log(`Listening on port: ${PORT}`, 'NestApplication');
 }
 bootstrap();

@@ -9,7 +9,7 @@ import { TasksModule } from './tasks/tasks.module';
   imports: [
     ConfigModule.forRoot({
       envFilePath: ['.env'],
-      isGlobal: true
+      isGlobal: true,
     }),
     TasksModule,
     TypeOrmModule.forRoot({

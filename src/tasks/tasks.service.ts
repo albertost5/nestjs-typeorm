@@ -1,5 +1,10 @@
-import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
-import { TaskStatus } from './task-status.enum';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 // import { v4 as uuidv4 } from 'uuid';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
@@ -10,9 +15,8 @@ import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 
 @Injectable()
 export class TasksService {
-
   private logger = new Logger('TaskService', {
-    timestamp: true
+    timestamp: true,
   });
 
   constructor(
@@ -22,20 +26,19 @@ export class TasksService {
 
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
     const { title, description } = createTaskDto;
-    const task = this.taskRepository.create({
+
+    const task: Task = this.taskRepository.create({
       title: title,
       description: description,
     });
+    const taskSaved: Task = await this.taskRepository.save(task);
 
-    await this.taskRepository.save(task);
-
-    return task;
+    return taskSaved;
   }
 
   async getTaskById(id: string): Promise<Task> {
     const task = await this.taskRepository.findOne({ where: { id } });
     if (!task) throw new NotFoundException(`Task with id ${id} not found.`);
-
     return task;
   }
 
@@ -50,7 +53,6 @@ export class TasksService {
         'LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search)',
         { search: `%${search}%` },
       );
-    
     try {
       const tasks = await query.getMany();
       return tasks;
@@ -58,12 +60,10 @@ export class TasksService {
       this.logger.error(`Error: ${error}`);
       throw new InternalServerErrorException();
     }
-
   }
 
   async deleteTask(id: string): Promise<object> {
     const { affected } = await this.taskRepository.delete(id);
-
     if (affected === 0)
       throw new NotFoundException(`Task with id ${id} not found.`);
 
@@ -81,6 +81,7 @@ export class TasksService {
     const task = await this.getTaskById(id);
     task.status = status;
     await this.taskRepository.save(task);
+    console.log('taskUpdated => ', task);
 
     return task;
   }
