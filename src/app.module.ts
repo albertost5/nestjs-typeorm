@@ -21,7 +21,7 @@ import { TasksModule } from './tasks/tasks.module';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: true,
-    }),
+    })
   ],
   controllers: [AppController],
   providers: [AppService],

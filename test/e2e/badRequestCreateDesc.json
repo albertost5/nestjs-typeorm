@@ -1,0 +1,7 @@
+{
+    "statusCode": 400,
+    "message": [
+        "description should not be empty"
+    ],
+    "error": "Bad Request"
+}

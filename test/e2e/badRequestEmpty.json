@@ -1,0 +1,8 @@
+{
+    "statusCode": 400,
+    "message": [
+        "status must be a valid enum value",
+        "search should not be empty"
+    ],
+    "error": "Bad Request"
+}
