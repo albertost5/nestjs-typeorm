@@ -14,7 +14,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(PORT);
-
+    
+  console.log('NODE ENV: ', process.env.NODE_ENV);
+  
   logger.log(`Listening on port: ${PORT}`, 'NestApplication');
 }
 bootstrap();

@@ -2,10 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
-import { response } from 'express';
+import { DataSource } from 'typeorm';
+import { TasksModule } from 'src/tasks/tasks.module';
+import { DatabaseModule } from 'src/database/database.module';
+import { DatabaseService } from 'src/database/database.service';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
+  let db;
 
   //MOCKS
   const tasks = require('./e2e/tasks.json');
@@ -20,13 +24,17 @@ describe('AppController (e2e)', () => {
   const badRequestCreateEmptyTitle = require('./e2e/badRequestCreateEmptyTitle.json');
 
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule]
     }).compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
+    
+    // Provide DB service to connect
+    db = moduleFixture.get<DatabaseService>(DatabaseService).getConnection();
+    
 
     await app.init();
   });
@@ -133,4 +141,8 @@ describe('AppController (e2e)', () => {
   //     .expect(404)
   //     .expect(notFoundById);
   // });
+
+  afterAll(async () => {
+    await app.close();
+  });
 });
