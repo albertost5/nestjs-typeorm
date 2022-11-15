@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseService } from './database.service';
 
+console.log('LOADING APP DATABASE MODULE.. ');
+
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -22,4 +24,5 @@ import { DatabaseService } from './database.service';
   ],
   providers: [DatabaseService]
 })
+
 export class DatabaseModule {}

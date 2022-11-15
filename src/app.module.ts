@@ -4,28 +4,21 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TasksModule } from './tasks/tasks.module';
 import { DatabaseModule } from './database/database.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client'),
+      renderPath: '/',
+      exclude: ['/api*']
+    }),
     ConfigModule.forRoot({
       envFilePath: [`.env.${process.env.NODE_ENV}`],
       isGlobal: true,
     }),
     TasksModule,
-    // TypeOrmModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   inject: [ConfigService],
-    //   useFactory: async (configService: ConfigService) => ({
-    //     type: 'postgres',
-    //     host: process.env.DB_HOST,
-    //     port: +configService.get('DB_PORT'),
-    //     username: configService.get('DB_USER'),
-    //     password: configService.get('DB_PASSWORD'),
-    //     database: configService.get('DB_NAME'),
-    //     autoLoadEntities: true,
-    //     synchronize: true,
-    //   })
-    // }),
     DatabaseModule
   ],
   controllers: [AppController],

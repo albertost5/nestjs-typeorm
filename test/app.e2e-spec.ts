@@ -3,13 +3,12 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { DataSource } from 'typeorm';
-import { TasksModule } from 'src/tasks/tasks.module';
-import { DatabaseModule } from 'src/database/database.module';
-import { DatabaseService } from 'src/database/database.service';
+import { Task } from '../src/tasks/task.entity';
+import { join } from 'path';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-  let db;
+  let dataSource;
 
   //MOCKS
   const tasks = require('./e2e/tasks.json');
@@ -23,20 +22,41 @@ describe('AppController (e2e)', () => {
   const badRequestCreateDesc = require('./e2e/badRequestCreateDesc.json');
   const badRequestCreateEmptyTitle = require('./e2e/badRequestCreateEmptyTitle.json');
 
-
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule]
     }).compile();
 
+    // Load App
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
     
-    // Provide DB service to connect
-    db = moduleFixture.get<DatabaseService>(DatabaseService).getConnection();
-    
+    // Test DB connection
+    dataSource = new DataSource({
+      type: "postgres",
+      host: "localhost",
+      port: 5432,
+      username: "postgres",
+      password: "root",
+      database: "test-management",
+      entities: [
+        __dirname + '/../src/**/*.entity.ts'
+      ],
+    });
 
+    try {
+      dataSource = await dataSource.initialize();
+      console.log('Data Source has been initialized!');  
+    } catch (error) { 
+      console.log("Error during Data Source initialization", error);
+    }
+
+    // Start app
     await app.init();
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 
   it('/ (GET)', () => {
@@ -141,8 +161,4 @@ describe('AppController (e2e)', () => {
   //     .expect(404)
   //     .expect(notFoundById);
   // });
-
-  afterAll(async () => {
-    await app.close();
-  });
 });
