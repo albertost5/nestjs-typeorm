@@ -19,10 +19,10 @@ console.log('LOADING APP DATABASE MODULE.. ');
         database: configService.get('DB_NAME'),
         autoLoadEntities: true,
         synchronize: true,
-      })
-    })
+      }),
+    }),
   ],
-  providers: [DatabaseService]
+  providers: [DatabaseService],
+  exports: [DatabaseService],
 })
-
 export class DatabaseModule {}

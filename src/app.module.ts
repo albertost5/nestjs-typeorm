@@ -12,14 +12,14 @@ import { join } from 'path';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
       renderPath: '/',
-      exclude: ['/api*']
+      exclude: ['/api*'],
     }),
     ConfigModule.forRoot({
       envFilePath: [`.env.${process.env.NODE_ENV}`],
       isGlobal: true,
     }),
     TasksModule,
-    DatabaseModule
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

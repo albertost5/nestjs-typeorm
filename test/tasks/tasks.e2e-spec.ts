@@ -1,55 +1,40 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
-import { DataSource } from 'typeorm';
-import { Task } from '../src/tasks/task.entity';
-import { join } from 'path';
+import { AppModule } from '../../src/app.module';
+import { DatabaseService } from '../../src/database/database.service';
+import { Task } from '../../src/tasks/task.entity';
+import { TestUtils } from '../utils/index';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-  let dataSource;
+  let testUtils: TestUtils;
 
   //MOCKS
-  const tasks = require('./e2e/tasks.json');
-  const tasksOpen = require('./e2e/tasksOpen.json');
-  const tasksDone = require('./e2e/tasksDone.json');
-  const badRequestStatus = require('./e2e/badRequestStatus.json');
-  const badRequestEmpty = require('./e2e/badRequestEmpty.json');
-  const taskById = require('./e2e/taskById.json');
-  const notFoundById = require('./e2e/notFoundById.json');
-  const badRequestCreateEmpty = require('./e2e/badRequestCreateEmpty.json');
-  const badRequestCreateDesc = require('./e2e/badRequestCreateDesc.json');
-  const badRequestCreateEmptyTitle = require('./e2e/badRequestCreateEmptyTitle.json');
+  const tasks = require('../e2e/tasks.json');
+  const tasksOpen = require('../e2e/tasksOpen.json');
+  const tasksDone = require('../e2e/tasksDone.json');
+  const badRequestStatus = require('../e2e/badRequestStatus.json');
+  const badRequestEmpty = require('../e2e/badRequestEmpty.json');
+  const taskById = require('../e2e/taskById.json');
+  const notFoundById = require('../e2e/notFoundById.json');
+  const badRequestCreateEmpty = require('../e2e/badRequestCreateEmpty.json');
+  const badRequestCreateDesc = require('../e2e/badRequestCreateDesc.json');
+  const badRequestCreateEmptyTitle = require('../e2e/badRequestCreateEmptyTitle.json');
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule]
+      imports: [AppModule],
+      providers: [DatabaseService, TestUtils],
     }).compile();
 
     // Load App
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
-    
-    // Test DB connection
-    dataSource = new DataSource({
-      type: "postgres",
-      host: "localhost",
-      port: 5432,
-      username: "postgres",
-      password: "root",
-      database: "test-management",
-      entities: [
-        __dirname + '/../src/**/*.entity.ts'
-      ],
-    });
 
-    try {
-      dataSource = await dataSource.initialize();
-      console.log('Data Source has been initialized!');  
-    } catch (error) { 
-      console.log("Error during Data Source initialization", error);
-    }
+    // Db connection to clean the Entity table
+    testUtils = moduleFixture.get<TestUtils>(TestUtils);
+    await testUtils.cleanAll(Task);
 
     // Start app
     await app.init();
@@ -87,7 +72,7 @@ describe('AppController (e2e)', () => {
   //   const response = await request(app.getHttpServer())
   //     .post('/tasks')
   //     .send({ title: 'JIRA', description: 'Training' });
-    
+
   //   expect(response.status).toEqual(201);
   //   expect(response.body).toMatchSnapshot({
   //     id: expect.any(String)

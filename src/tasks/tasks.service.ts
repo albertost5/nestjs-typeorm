@@ -8,9 +8,9 @@ import {
 // import { v4 as uuidv4 } from 'uuid';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { Task } from './task.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 
 @Injectable()
@@ -19,13 +19,19 @@ export class TasksService {
     timestamp: true,
   });
 
+  // private taskRepo = this.dataSource.getRepository(Task);
+
   constructor(
     @InjectRepository(Task)
     private readonly taskRepository: Repository<Task>,
+    // @InjectDataSource()
+    // private readonly dataSource: DataSource
   ) {}
 
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
     const { title, description } = createTaskDto;
+    // const taskRepo = this.dataSource.getRepository(Task);
+    // console.log(this.taskRepo);
 
     const task: Task = this.taskRepository.create({
       title: title,
