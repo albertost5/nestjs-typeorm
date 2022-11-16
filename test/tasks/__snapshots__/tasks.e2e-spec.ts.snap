@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tasks (e2e) createTask:  /tasks (POST), Create task 1`] = `
+Object {
+  "description": "Training",
+  "id": Any<String>,
+  "status": "OPEN",
+  "title": "JIRA",
+}
+`;

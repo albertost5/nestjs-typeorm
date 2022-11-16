@@ -87,7 +87,6 @@ export class TasksService {
     const task = await this.getTaskById(id);
     task.status = status;
     await this.taskRepository.save(task);
-    console.log('taskUpdated => ', task);
 
     return task;
   }
