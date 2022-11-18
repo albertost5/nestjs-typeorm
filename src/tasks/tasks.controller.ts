@@ -12,7 +12,6 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 import { Task } from './task.entity';
-// import { Task } from './task.model';
 import { TasksService } from './tasks.service';
 import { Logger } from '@nestjs/common';
 
@@ -36,6 +35,16 @@ export class TasksController {
     return this.tasksService.getTaskById(id);
   }
 
+  @Get('status/done')
+  getJsTasks() {
+    return this.tasksService.getTasksDone();
+  }
+
+  @Get('filter/title')
+  getFirstWhere() {
+    return this.tasksService.firstWhere('title', 'JIRA');
+  }
+
   @Delete(':id')
   deleteTask(@Param('id') id: string): Promise<object> {
     return this.tasksService.deleteTask(id);
@@ -54,7 +63,7 @@ export class TasksController {
     return this.tasksService.updateTaskStatus(id, updateTaskStatusDto);
   }
 
-  // @Post()
+  // @Post()np
   // create(@Body() createTaskDto: CreateTaskDto): Task {
   //   return this.tasksService.create(createTaskDto);
   // }

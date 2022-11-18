@@ -12,6 +12,7 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { Task } from './task.entity';
 import { DataSource, Repository } from 'typeorm';
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
+import { TaskRepository } from './task.repository'
 
 @Injectable()
 export class TasksService {
@@ -22,8 +23,9 @@ export class TasksService {
   // private taskRepo = this.dataSource.getRepository(Task);
 
   constructor(
-    @InjectRepository(Task)
-    private readonly taskRepository: Repository<Task>,
+    private taskRepository: TaskRepository
+    // @InjectRepository(Task)
+    // private readonly taskRepository: Repository<Task>,
     // @InjectDataSource()
     // private readonly dataSource: DataSource
   ) {}
@@ -89,6 +91,14 @@ export class TasksService {
     await this.taskRepository.save(task);
 
     return task;
+  }
+
+  async getTasksDone() {
+    return await this.taskRepository.findDone();
+  }
+
+  async firstWhere(column: string, value: string | number, operator = '=') {
+    return await this.taskRepository.firstWhere(column, value)
   }
 
   // private tasks: Task[] = [];
