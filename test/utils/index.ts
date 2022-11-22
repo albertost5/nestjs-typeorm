@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { dataSource } from 'src/database/data-source';
+// import { dataSource } from '../../src/database/data-source';
 import { DatabaseService } from '../../src/database/database.service';
 
 @Injectable()
@@ -16,8 +16,10 @@ export class TestUtils {
 
   async cleanAll(entity: any) {
     try {
-      // const repository = this.databaseService.getRepository(entity);
-      const repository = dataSource.getRepository(entity);
+      // console.log({dataSource});
+      // const repository = dataSource.getRepository(entity);
+
+      const repository = this.databaseService.getRepository(entity);
       await repository.clear();
     } catch (error) {
       throw new Error(`ERROR: Cleaning test db: ${error}`);
